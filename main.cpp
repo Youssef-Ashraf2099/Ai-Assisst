@@ -24,26 +24,37 @@ void rememberUser(string input, string &userName) {
 }
 
 // Random response generator for more natural conversation
-std::string getRandomResponse(const std::vector<std::string> &responses) {
+string getRandomResponse(const vector<string> &responses) {
     if (responses.empty()) return "I'm not sure how to respond to that.";
     int index = rand() % responses.size();
     return responses[index];
 }
 
 // Enhanced method for responding to user input with pattern matching and context tracking
-void respondToUser(const std::string &input, const std::map<std::string, std::vector<std::string>> &responseMap, const std::string &userName) {
+void respondToUser(const string &input, const map<string, vector<string>> &responseMap, const string &userName,bool talkMode) {
     for (const auto &pair : responseMap) {
-        std::regex pattern(pair.first, std::regex_constants::icase);
-        if (std::regex_search(input, pattern)) {
-            std::string response = getRandomResponse(pair.second);
-            std::cout << "Assistant: " << response << std::endl;
+        regex pattern(pair.first, std::regex_constants::icase);
+        if (regex_search(input, pattern)) {
+            string response = getRandomResponse(pair.second);
+            cout << "Assistant: " << response << endl;
+             // Speak the response if talk mode is enabled
+            if (talkMode) {
+                speak(response);
+            }
             return;
         }
     }
 
     // Default response if no match is found
-    std::cout << "Assistant: I'm not sure how to respond to that. Could you try rephrasing?" << std::endl;
-}
+    string defaultResponse = "I'm not sure how to respond to that. Could you try rephrasing?";
+    cout << "Assistant: " << defaultResponse << endl;
+    if (talkMode) {
+        speak(defaultResponse);
+    }
+ 
+    }
+
+   
 int main()
 {
 std::string userInput, userName;
@@ -65,7 +76,7 @@ bool talkMode = false;
         getline(cin, userInput);
 
         if (userInput == "bye") {
-            respondToUser(userInput, responseMap, userName);
+            respondToUser(userInput, responseMap, userName,talkMode);
             break;
         }
         // Toggle talk mode on or off
@@ -88,11 +99,11 @@ bool talkMode = false;
             cout << "Assistant: " << userName << ", ";
         }
  // Speak the response if talk mode is enabled
-        if (talkMode) {
-            speak(userInput);
-        }
+      //  if (talkMode) {
+        //    speak(userInput);  //read the user input not needed here
+        //}
         // Generate a response
-        respondToUser(userInput, responseMap, userName);
+        respondToUser(userInput, responseMap, userName,talkMode);
     }
 
     return 0;
