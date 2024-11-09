@@ -4,6 +4,9 @@
 
 using namespace std;
 
+void toLowerCase(string &str) {
+    transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
 
 
 
