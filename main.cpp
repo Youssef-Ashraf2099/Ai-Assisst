@@ -1,18 +1,24 @@
 #include <iostream>
 #include <string>
-#include <algorithm> // For transform function
+#include <algorithm> 
+#include <cstdlib>
 
 using namespace std;
 
 void toLowerCase(string &str) {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
+
+void speak(const string &text) {
+    string command = "espeak \"" + text + "\"";
+    system(command.c_str());
+}
 // Function to simulate a simple memory (e.g., user's name)
-void rememberUser(std::string input, std::string &userName) {
+void rememberUser(string input, string &userName) {
     size_t pos = input.find("my name is");
-    if (pos != std::string::npos) {
+    if (pos != string::npos) {
         userName = input.substr(pos + 11); // Extracts the name part
-        std::cout << "Assistant: Nice to meet you, " << userName << "!" << std::endl;
+        cout << "Assistant: Nice to meet you, " << userName << "!" << endl;
     }
 }
 
