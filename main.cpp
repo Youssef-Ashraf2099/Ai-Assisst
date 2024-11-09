@@ -19,12 +19,23 @@ void respondToUser(const string &input) {
         cout << "Assistant: I'm not sure how to respond to that. Could you try rephrasing?" << endl;
     }
 }
-int main() {    
+int main() {
     string userInput;
-
-    cout << "Interactive Assistant: Type 'bye' to exit." << endl;
+        
+   cout << "NOTE: Interactive Assistant: Type 'bye' to exit." << endl;
     while (true) {
-        // get user input
+        cout << "You: ";
+        getline(cin, userInput);
+        
+        // Convert input to lowercase for easier matching
+        toLowerCase(userInput);
+
+        if (userInput == "bye") {
+            respondToUser(userInput);
+            break;
+        }
+
+        respondToUser(userInput);
     }
 
     return 0;
