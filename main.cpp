@@ -7,6 +7,14 @@ using namespace std;
 void toLowerCase(string &str) {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
+// Function to simulate a simple memory (e.g., user's name)
+void rememberUser(std::string input, std::string &userName) {
+    size_t pos = input.find("my name is");
+    if (pos != std::string::npos) {
+        userName = input.substr(pos + 11); // Extracts the name part
+        std::cout << "Assistant: Nice to meet you, " << userName << "!" << std::endl;
+    }
+}
 
 void respondToUser(const string &input) {
     if (input.find("hello") != string::npos) {
