@@ -3,11 +3,22 @@
 #include <algorithm> 
 #include <cstdlib>
 #include<regex>
+#include <ctime>
+#include <curl/curl.h>
+#include <sstream>
 
 using namespace std;
 
 void toLowerCase(string &str) {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+void displayTime() {
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    cout << "Assistant: The current time is ";
+    cout << 1 + ltm->tm_hour-1 << ":" //Egypt Zone in winter time is early by 1 hour if summer +1
+         << 1 + ltm->tm_min << ":"
+         << 1 + ltm->tm_sec << "." << endl;
 }
 
 void speak(const string &text) {
@@ -33,10 +44,27 @@ string getRandomResponse(const vector<string> &responses) {
 // Enhanced method for responding to user input with pattern matching and context tracking
 void respondToUser(const string &input, const map<string, vector<string>> &responseMap, const string &userName,bool talkMode) {
     for (const auto &pair : responseMap) {
-        regex pattern(pair.first, std::regex_constants::icase);
+        regex pattern(pair.first, regex_constants::icase);
         if (regex_search(input, pattern)) {
             string response = getRandomResponse(pair.second);
             cout << "Assistant: " << response << endl;
+
+
+
+if (regex_search(input, pattern)) {
+    if (pair.first == "time") {
+        displayTime();
+    } else {
+        string response = getRandomResponse(pair.second);
+        cout << "Assistant: " << response << endl;
+        if (talkMode) {
+            speak(response);
+        }
+    }
+    return;
+}
+
+
              // Speak the response if talk mode is enabled
             if (talkMode) {
                 speak(response);
@@ -57,13 +85,13 @@ void respondToUser(const string &input, const map<string, vector<string>> &respo
    
 int main()
 {
-std::string userInput, userName;
-    std::map<std::string, std::vector<std::string>> responseMap = {
+     string userInput, userName;
+    map<string, vector<string>> responseMap = {
         {"hello", {"Hello! How can I help you today?", "Hi there! What can I do for you?", "Hey! How's it going?"}},
         {"how are you", {"I'm just a program, but I'm doing great! How can I assist you?", "I'm fine, thanks for asking! What do you need help with?"}},
         {"bye", {"Goodbye! Have a great day!", "See you later!", "Bye! Take care!"}},
         {"your name", {"I'm an interactive assistant created in C++!", "You can call me your virtual assistant."}},
-        {"time", {"I'm not equipped to tell the time right now, but you can check your system clock."}}
+        {"time", {"The system clock is ..."}}
     };
 
    
@@ -98,10 +126,14 @@ bool talkMode = false;
         if (!userName.empty() && userInput.find("my name is") == string::npos) {
             cout << "Assistant: " << userName << ", ";
         }
- // Speak the response if talk mode is enabled
-      //  if (talkMode) {
-        //    speak(userInput);  //read the user input not needed here
-        //}
+ /*
+  Speak the response if talk mode is enabled
+        if (talkMode) {
+            speak(userInput);  //read the user input not needed here
+        }
+
+        */
+
         // Generate a response
         respondToUser(userInput, responseMap, userName,talkMode);
     }
